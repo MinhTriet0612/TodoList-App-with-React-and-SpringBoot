@@ -16,12 +16,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
     TaskService taskService;
-    TaskRepository taskRepository;
 
     @Autowired
     public TaskController(TaskService taskService, TaskRepository taskRepository) {
         this.taskService = taskService;
-        this.taskRepository = taskRepository;
     }
 
 

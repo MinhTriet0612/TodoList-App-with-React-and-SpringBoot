@@ -66,14 +66,5 @@ public class TaskServiceImpl implements TaskService {
         return task;
     }
 
-    @Override
-    public Map<Status, Integer> checkStatusTasks() {
-        Map<Status, Integer> tempMap = new HashMap<>();
-        tempMap.put(Status.IN_PROGRESS, taskRepository.countTaskByStatus(Status.IN_PROGRESS));
-        tempMap.put(Status.COMPLETED, taskRepository.countTaskByStatus(Status.COMPLETED));
-        tempMap.put(Status.CANCELLED, taskRepository.countTaskByStatus(Status.CANCELLED));
-        tempMap.put(Status.OVERDUE, taskRepository.countTaskByStatus(Status.OVERDUE));
 
-        return tempMap;
-    }
 }

@@ -31,6 +31,7 @@ public class TaskController {
         return tempListTasks;
     }
 
+    @GetMapping("/task/{id}")
     public Integer findTaskById(@PathVariable Integer id) {
         Task tempTask = taskService.getTaskById(id);
         return tempTask.getPriority().ordinal();
@@ -44,12 +45,12 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.OK).body(theTask);
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    @GetMapping("/task/{id}")
+
 
     @PutMapping("/task/{id}")
-    public void editTask(@RequestBody Task theTask, @PathVariable Integer id) {
-        taskService.editTask(theTask, id);
-//        return ResponseEntity.status(HttpStatus.OK).body(tempTask);
+    public ResponseEntity<Task> editTask(@RequestBody Task theTask, @PathVariable Integer id) {
+        Task tempTask = taskService.editTask(theTask, id);
+        return ResponseEntity.status(HttpStatus.OK).body(tempTask);
     }
 
     @DeleteMapping("/task/{id}")

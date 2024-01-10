@@ -2,8 +2,6 @@ import React, { useRef, useContext } from "react";
 import { Button, Form, Input, DatePicker, Flex } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import Select from "react-select";
-import { notification } from "antd";
-import { SmileOutlined } from "@ant-design/icons";
 import { TaskContext } from "../store/TaskContext";
 
 const layout = {
@@ -41,20 +39,6 @@ const EditTaskPage = () => {
 	const noteRef = useRef(null);
 
 	// Variable for notification
-	const [api, contextHolder] = notification.useNotification();
-	const openNotification = (message, description) => {
-		api.open({
-			message: message,
-			description: description,
-			icon: (
-				<SmileOutlined
-					style={{
-						color: "#108ee9",
-					}}
-				/>
-			),
-		});
-	};
 
 	const onSubmit = () => {
 		const task = {
@@ -114,7 +98,6 @@ const EditTaskPage = () => {
 				</Form.Item>
 
 				<Flex style={{ justifyContent: "center", gap: "1rem" }}>
-					{contextHolder}
 					<Button
 						type="primary"
 						htmlType="submit"

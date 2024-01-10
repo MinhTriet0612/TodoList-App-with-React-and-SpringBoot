@@ -13,16 +13,33 @@ import {
 	ReloadOutlined,
 	SortAscendingOutlined,
 	CheckOutlined,
+	SmileOutlined,
 } from "@ant-design/icons";
 
-import { Button, Flex, Form, Modal, Table, Input, DatePicker } from "antd";
+import { Button, Flex, Form, Modal, Table, Input } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
-import Select from "react-select";
 import { TaskContext } from "../store/TaskContext";
 import axios from "axios";
+import Select from "react-select";
+import { notification } from "antd";
 
 const HomePage = () => {
+	const [api, contextHolder] = notification.useNotification();
+	const openNotification = (message, description) => {
+		api.open({
+			message: message,
+			description: description,
+			icon: (
+				<SmileOutlined
+					style={{
+						color: "#108ee9",
+					}}
+				/>
+			),
+		});
+	};
+
 	const [currentTask, setCurrentTask] = useState([]);
 	const { tasks, removeTaskService } = useContext(TaskContext);
 	const [taskAmount, setTaskAmount] = useState({});
@@ -36,7 +53,6 @@ const HomePage = () => {
 		};
 		calculateAmountTaskStatus().then((res) => {
 			setTaskAmount(res.data);
-			console.log(res.data);
 		});
 	}, [tasks]);
 
@@ -64,44 +80,31 @@ const HomePage = () => {
 		removeTaskService(id);
 	};
 
+	const filterTaskService = (status, priority) => {
+		console.log(status, priority);
+		axios
+			.get("http://localhost:8081/api/filterViaStatusAndPriority", {
+				params: {
+					status: status ? status : "Default",
+					priority: priority ? priority : "Default",
+				},
+			})
+			.then((res) => setCurrentTask(res.data))
+			.then(openNotification("Filter", "Success"));
+	};
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	// const [isModalOpenFilter, setIsModalOpenFilter] = useState(false);
-	// const useStateTaskRef = useRef(null);
-	// const useImportanceLevelRef = useRef(null);
-	// const useDeadlineRef = useRef(null);
-	// const filterTaskForThreeOption = () => {
-	// 	console.log(useStateTaskRef.current);
-	// 	console.log(useDeadlineRef.current);
-	// 	const taskClone = [...todoList].filter((task) => {
-	// 		if (
-	// 			useImportanceLevelRef.current?.target === "Default" &&
-	// 			useStateTaskRef.current === "Default" &&
-	// 			useDeadlineRef.current === null
-	// 		)
-	// 			return true;
-	// 		return useImportanceLevelRef.current?.priority
-	// 			? task.option.priority === useImportanceLevelRef.current?.priority
-	// 			: true && useStateTaskRef?.current
-	// 			  ? task.stateTask === useStateTaskRef.current
-	// 			  : true && useDeadlineRef?.current
-	// 			    ? task.deadline === useDeadlineRef.current
-	// 			    : true;
-	// 	});
-	// 	setCurrentTask(taskClone);
-	// };
-	// 	useEffect(() => {
-	// 		dispatch(calculate(todoList));
-	// 		setCurrentTask([...todoList]);
-	// 		console.log("useEffect");
-	// 	}, [todoList]);
+	const [isModalOpenFilter, setIsModalOpenFilter] = useState(false);
+	const statusRef = useRef(null);
+	const priorityRef = useRef(null);
 
 	const options = [
-		{ label: "Default", value: { target: "Default", priority: 0 } },
-		{ label: "In Day", value: { target: "InDay", priority: 1 } },
-		{ label: "In Three Day", value: { target: "InThreeDay", priority: 2 } },
-		{ label: "In Week", value: { target: "InWeek", priority: 3 } },
-		{ label: "In Two Weeks", value: { target: "InTwoWeeks", priority: 4 } },
-		{ label: "In Month", value: { target: "InMonth", priority: 5 } },
+		{ label: "Default", value: "Default" },
+		{ label: "In Day", value: "IN_DAY" },
+		{ label: "In Three Day", value: "IN_THREE_DAYS" },
+		{ label: "In Week", value: "IN_WEEK" },
+		{ label: "In Two Weeks", value: "IN_TWO_WEEKS" },
+		{ label: "In Month", value: "IN_MONTH" },
 	];
 	const StateTask = [
 		{ label: "Default", value: "Default" },
@@ -159,6 +162,7 @@ const HomePage = () => {
 	];
 	return (
 		<>
+			{contextHolder}
 			<h1 style={{ margin: "1rem" }}>Quản lý công việc</h1>
 			<Search
 				placeholder="Tìm kiếm theo tiêu đề công việc"
@@ -181,7 +185,7 @@ const HomePage = () => {
 				<Flex style={{ gap: "5px" }}>
 					<Button
 						style={{ fontWeight: "bold" }}
-						// onClick={() => setIsModalOpenFilter(true)}
+						onClick={() => setIsModalOpenFilter(true)}
 					>
 						{<FilterOutlined style={{ fontSize: "16px" }} />} Filter
 					</Button>
@@ -239,13 +243,16 @@ const HomePage = () => {
 				<p>OVERDUE: {taskAmount.OVERDUE}</p>
 			</Modal>
 
-			{/* <Modal
+			<Modal
 				title="Filter"
 				open={isModalOpenFilter}
 				onOk={() => {
 					{
 						setIsModalOpenFilter(false);
-						filterTaskForThreeOption();
+						filterTaskService(
+							statusRef.current?.value,
+							priorityRef.current?.value,
+						);
 					}
 				}}
 				onCancel={() => {
@@ -254,14 +261,25 @@ const HomePage = () => {
 			>
 				<Form>
 					<Form.Item label="Lọc theo mức độ quan trọng">
-						<Select options={options} defaultValue={options[0]} />
+						<Select
+							options={options}
+							defaultValue={options[0]}
+							onChange={(e) => {
+								priorityRef.current = e;
+							}}
+						/>
 					</Form.Item>
 					<Form.Item label="Lọc theo trạng thái">
-						<Select options={StateTask} defaultValue={options[0]} />
-					</Form.Item> */}
-			{/* </Form> */}
-			{/* ; //{" "} */}
-			{/* </Modal> */}
+						<Select
+							options={StateTask}
+							defaultValue={options[0]}
+							onChange={(e) => {
+								statusRef.current = e;
+							}}
+						/>
+					</Form.Item>
+				</Form>
+			</Modal>
 		</>
 	);
 };

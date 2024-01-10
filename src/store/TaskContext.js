@@ -105,14 +105,17 @@ const TaskContextProvider = ({ children }) => {
 					return res;
 				};
 
-				removeTask(id).then((res) => {
-					const dataHaveBeenDeleted = res.data;
-					const data = state.tasks.filter(
-						(task) => task.id !== dataHaveBeenDeleted.id,
-					);
+				removeTask(id)
+					.then((res) => {
+						const dataHaveBeenDeleted = res.data;
+						const data = state.tasks.filter(
+							(task) => task.id !== dataHaveBeenDeleted.id,
+						);
 
-					dispatch({ type: actions.GET_TASKS_FROM_DATABASE, payload: data });
-				});
+						dispatch({ type: actions.GET_TASKS_FROM_DATABASE, payload: data });
+					})
+					.then(openNotification("Sucess", "Delete Task Sucessfully"))
+					.catch((e) => openNotification("Fail", "Delete Task Unsucessfully"));
 				return {
 					state,
 					tasks: state.tasks.filter((task) => task.id !== id),

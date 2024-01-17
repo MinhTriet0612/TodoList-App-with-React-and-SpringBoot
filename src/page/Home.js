@@ -48,7 +48,9 @@ const HomePage = () => {
 		setCurrentTask(tasks);
 
 		const calculateAmountTaskStatus = async () => {
-			const res = await axios.get("http://localhost:8081/api/filteramount");
+			const res = await axios.get(
+				"http://puzzled-quiet-production.up.railway.app/api/filteramount",
+			);
 			return res;
 		};
 		calculateAmountTaskStatus().then((res) => {
@@ -57,10 +59,12 @@ const HomePage = () => {
 	}, [tasks]);
 
 	const sortTaskService = () => {
-		axios.get("http://localhost:8081/api/sorting").then((res) => {
-			console.log(res.data);
-			setCurrentTask(res.data);
-		});
+		axios
+			.get("http://puzzled-quiet-production.up.railway.app/api/sorting")
+			.then((res) => {
+				console.log(res.data);
+				setCurrentTask(res.data);
+			});
 	};
 
 	const reloadDataService = () => {
@@ -83,12 +87,15 @@ const HomePage = () => {
 	const filterTaskService = (status, priority) => {
 		console.log(status, priority);
 		axios
-			.get("http://localhost:8081/api/filterViaStatusAndPriority", {
-				params: {
-					status: status ? status : "Default",
-					priority: priority ? priority : "Default",
+			.get(
+				"http://puzzled-quiet-production.up.railway.app/api/filterViaStatusAndPriority",
+				{
+					params: {
+						status: status ? status : "Default",
+						priority: priority ? priority : "Default",
+					},
 				},
-			})
+			)
 			.then((res) => setCurrentTask(res.data))
 			.then(openNotification("Filter", "Success"));
 	};

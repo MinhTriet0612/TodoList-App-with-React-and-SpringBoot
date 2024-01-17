@@ -40,7 +40,7 @@ const TaskContextProvider = ({ children }) => {
 				let id;
 				const { task } = action.payload;
 				axios
-					.post("http://localhost:8081/api/task", {
+					.post("http://puzzled-quiet-production.up.railway.app/api/task", {
 						status: task.status,
 						priority: task.priority,
 						title: task.title,
@@ -78,7 +78,7 @@ const TaskContextProvider = ({ children }) => {
 				const currentTask = task;
 				const editTask = async (id, task) => {
 					const res = await axios.put(
-						`http://localhost:8081/api/task/${id}`,
+						`http://puzzled-quiet-production.up.railway.app/api/task/${id}`,
 						task,
 					);
 					return res;
@@ -100,7 +100,7 @@ const TaskContextProvider = ({ children }) => {
 				const { id } = action.payload;
 				const removeTask = async (id) => {
 					const res = await axios.delete(
-						`http://localhost:8081/api/task/${id}`,
+						`http://puzzled-quiet-production.up.railway.app/api/task/${id}`,
 					);
 					return res;
 				};
@@ -149,7 +149,9 @@ const TaskContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		const getDataFromDataBase = async () => {
-			const res = await axios.get("http://localhost:8081/api/task");
+			const res = await axios.get(
+				"http://puzzled-quiet-production.up.railway.app/api/task",
+			);
 			return res;
 		};
 

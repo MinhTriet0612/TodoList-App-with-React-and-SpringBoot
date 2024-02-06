@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class jwtService {
-    private static final String SECRET_KEY = "3E11A48A164C47878A3D9A22FAB7F";
+public class JwtService {
+    private static final String SECRET_KEY = "9a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9";
 
     private Key getSigninKey() {
         byte[] keyBites = Decoders.BASE64.decode(SECRET_KEY);
@@ -50,7 +50,7 @@ public class jwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSigninKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
